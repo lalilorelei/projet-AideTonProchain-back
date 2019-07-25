@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+require('./db/mongoose');
+
 const adminRouter = require('./components/admin/routes');
 const beneficiaryRouter = require('./components/beneficiary/routes');
 const donorRouter = require('./components/donor/routes');

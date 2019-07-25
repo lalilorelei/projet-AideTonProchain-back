@@ -2,9 +2,11 @@ const express = require('express');
 
 const router = express.Router();
 
-const { profil, register } = require('./controllers');
+const donorCtlr = require('./controllers');
 
-router.get('/profil', profil);
-router.post('/register', register);
+router.post('/register', donorCtlr.register);
+router.post('/connexion', donorCtlr.connexion);
+router.post('/profil/:id', donorCtlr.profil);
+router.patch('/profil-update/:id', donorCtlr.profil_update);
 
 module.exports = router;
