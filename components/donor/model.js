@@ -1,8 +1,9 @@
 /* eslint-disable func-names */
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcryptjs');
-// const uniqueValidator = require('mongoose-unique-validator');
+const uniqueValidator = require('mongoose-unique-validator');
+
+const utilModel = require('../utils/model/index');
 
 const donorSchema = mongoose.Schema({
   firstname: {
@@ -12,6 +13,12 @@ const donorSchema = mongoose.Schema({
   },
   lastname: {
     type: String,
+    required: true,
+    trim: true,
+  },
+  username: {
+    type: String,
+    unique: true,
     required: true,
     trim: true,
   },
@@ -46,46 +53,16 @@ const donorSchema = mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
+  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donation', default: [] }],
 });
 
-donorSchema.methods.toJSON = function() {
-  const donorObject = this.toObject();
+donorSchema.methods.toJSON = utilModel.toJSON('password');
 
-  delete donorObject.password;
+donorSchema.pre('save', utilModel.preSave);
 
-  return donorObject;
-};
+donorSchema.statics.findByCredentials = utilModel.findByCredentials;
 
-// Hash the plain text password before saving
-donorSchema.pre('save', async function(next) {
-  if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 8);
-  }
-
-  if (!this.created_at) {
-    this.created_at = new Date();
-  }
-
-  next();
-});
-
-donorSchema.statics.findByCredentials = async (firstname = '', email = '', password) => {
-  // eslint-disable-next-line no-use-before-define
-  const donor = await Donor.findOne({ $or: [{ firstname }, { email }, { password }] });
-
-  if (!donor) {
-    throw new Error('Unable to login');
-  }
-
-  const isMatch = await bcrypt.compare(password, donor.password);
-
-  if (!isMatch) {
-    throw new Error('Unable to login');
-  }
-
-  return donor;
-};
+donorSchema.plugin(uniqueValidator);
 
 const Donor = mongoose.model('Donor', donorSchema);
 

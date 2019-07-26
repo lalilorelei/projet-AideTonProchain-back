@@ -1,8 +1,80 @@
+/* eslint-disable func-names */
 const mongoose = require('mongoose');
-// const uniqueValidator = require('mongoose-unique-validator');
+const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
-const beneficiarySchema = mongoose.Schema({});
+const utilModel = require('../utils/model/index');
 
-// beneficiarySchema.plugin(uniqueValidator);
+const beneficiarySchema = mongoose.Schema({
+  firstname: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  lastname: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error('Email is invalid');
+      }
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6,
+    trim: true,
+    validate(value) {
+      if (value.toLowerCase().includes('password')) {
+        throw new Error('Password cannot contain "password"');
+      }
+    },
+  },
+  created_at: {
+    type: Date,
+  },
+  updated_at: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+  localisation: {
+    type: {
+      address: String,
+      latitude: Number,
+      longitude: Number,
+    },
+    default: {
+      address: '',
+      latitude: 0,
+      longitude: 0,
+    },
+  },
+  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donnation', default: [] }],
+});
 
-module.exports = mongoose.model('Beneficiary', beneficiarySchema);
+beneficiarySchema.methods.toJSON = utilModel.toJSON('password');
+
+beneficiarySchema.pre('save', utilModel.preSave);
+
+beneficiarySchema.statics.findByCredentials = utilModel.findByCredentials;
+
+beneficiarySchema.plugin(uniqueValidator);
+
+const Beneficiary = mongoose.model('Beneficiary', beneficiarySchema);
+
+module.exports = Beneficiary;
