@@ -2,6 +2,11 @@
 /* eslint-disable func-names */
 
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const config = require('config');
+
+const jwtSecret = config.get('dev.jwtSecret');
 
 module.exports.toJSON = function() {
   const argumentsArray = [...arguments];
@@ -43,3 +48,16 @@ module.exports.findByCredentials = async (username = '', email = '', password, U
 
   return user;
 };
+
+module.exports.generateAuthToken = role =>
+  // eslint-disable-next-line implicit-arrow-linebreak
+  async function() {
+    const token = jwt.sign({ _id: this._id.toString(), role }, jwtSecret, {
+      expiresIn: '1m',
+    });
+
+    this.tokens = this.tokens.concat({ token });
+    await this.save();
+
+    return token;
+  };

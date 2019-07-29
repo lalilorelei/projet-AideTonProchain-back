@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const utilModel = require('../utils/model/index');
+const utilModel = require('../utils_components/model/index');
 
 const donorSchema = mongoose.Schema({
   firstname: {
@@ -54,6 +54,14 @@ const donorSchema = mongoose.Schema({
     default: Date.now,
   },
   donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donation', default: [] }],
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 donorSchema.methods.toJSON = utilModel.toJSON('password');
@@ -61,6 +69,8 @@ donorSchema.methods.toJSON = utilModel.toJSON('password');
 donorSchema.pre('save', utilModel.preSave);
 
 donorSchema.statics.findByCredentials = utilModel.findByCredentials;
+
+donorSchema.methods.generateAuthToken = utilModel.generateAuthToken('donor');
 
 donorSchema.plugin(uniqueValidator);
 

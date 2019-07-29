@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const utilModel = require('../utils/model/index');
+const utilModel = require('../utils_components/model/index');
 
 const shopkeeperSchema = mongoose.Schema({
   firstname: {
@@ -72,18 +72,23 @@ const shopkeeperSchema = mongoose.Schema({
     },
     required: true,
   },
-  products: {
-    type: [
-      {
-        name: String,
-        price: Number,
-        available: Boolean,
-        category: String,
+  products: [
+    {
+      name: { type: String, required: true, unique: true },
+      price: { type: Number, required: true },
+      available: { type: Boolean, required: true },
+      category: { type: String, required: true },
+    },
+  ],
+  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donnation' }],
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
       },
-    ],
-    default: [],
-  },
-  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donnation', default: [] }],
+    },
+  ],
 });
 
 shopkeeperSchema.methods.toJSON = utilModel.toJSON('password');
@@ -91,6 +96,8 @@ shopkeeperSchema.methods.toJSON = utilModel.toJSON('password');
 shopkeeperSchema.pre('save', utilModel.preSave);
 
 shopkeeperSchema.statics.findByCredentials = utilModel.findByCredentials;
+
+shopkeeperSchema.methods.generateAuthToken = utilModel.generateAuthToken('shopkeeper');
 
 shopkeeperSchema.plugin(uniqueValidator);
 

@@ -1,7 +1,7 @@
 // const bcrypt = require('bcrypt');
 // const jwt = require('jsonwebtoken');
 const Shopkeeper = require('./model');
-const utilCtlr = require('../utils/controllers/index');
+const utilCtlr = require('../utils_components/controllers/index');
 
 module.exports.register = utilCtlr.register(Shopkeeper);
 

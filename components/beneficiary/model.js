@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const utilModel = require('../utils/model/index');
+const utilModel = require('../utils_components/model/index');
 
 const beneficiarySchema = mongoose.Schema({
   firstname: {
@@ -25,13 +25,17 @@ const beneficiarySchema = mongoose.Schema({
   email: {
     type: String,
     unique: true,
+    required: false,
     trim: true,
     lowercase: true,
     validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error('Email is invalid');
+      if (value !== '') {
+        if (!validator.isEmail(value)) {
+          throw new Error('Email is invalid');
+        }
       }
     },
+    default: '',
   },
   password: {
     type: String,
@@ -65,6 +69,14 @@ const beneficiarySchema = mongoose.Schema({
     },
   },
   donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donnation', default: [] }],
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 beneficiarySchema.methods.toJSON = utilModel.toJSON('password');
@@ -72,6 +84,8 @@ beneficiarySchema.methods.toJSON = utilModel.toJSON('password');
 beneficiarySchema.pre('save', utilModel.preSave);
 
 beneficiarySchema.statics.findByCredentials = utilModel.findByCredentials;
+
+beneficiarySchema.methods.generateAuthToken = utilModel.generateAuthToken('beneficiary');
 
 beneficiarySchema.plugin(uniqueValidator);
 

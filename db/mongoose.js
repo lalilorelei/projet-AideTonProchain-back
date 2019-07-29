@@ -12,6 +12,7 @@ mongoose
   .then(() => {
     console.log('Successfully connected to MongoDB');
   })
+  // eslint-disable-next-line arrow-parens
   .catch(error => {
     console.log('Unable to connect to MongoDB');
     console.error(error);
