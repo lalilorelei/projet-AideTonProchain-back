@@ -24,8 +24,8 @@ const beneficiarySchema = mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
     required: false,
+    unique: false,
     trim: true,
     lowercase: true,
     validate(value) {

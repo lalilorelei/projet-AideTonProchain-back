@@ -4,26 +4,90 @@ const config = require('config');
 
 const jwtSecret = config.get('dev.jwtSecret');
 
-module.exports.register = User => async (req, res) => {
-  const user = new User(req.body);
+/* eslint-disable global-require */
+const Beneficiary = require('../../beneficiary/model');
+const Donor = require('../../donor/model');
+const Shopkeeper = require('../../shopkeeper/model');
 
+module.exports.register = User => async (req, res) => {
+  let email;
+  let username;
+  let error;
   try {
+    email = await Beneficiary.findOne({ email: req.body.email });
+
+    if (User !== Beneficiary) {
+      username = await Beneficiary.findOne({ username: req.body.username });
+    }
+
+    if (User !== Donor) {
+      if (!email) {
+        email = await Donor.findOne({ email: req.body.email });
+      }
+      if (!username) {
+        username = await Donor.findOne({ username: req.body.username });
+      }
+    }
+
+    if (User !== Shopkeeper) {
+      if (!email) {
+        email = await Shopkeeper.findOne({ email: req.body.email });
+      }
+      if (!username) {
+        username = await Shopkeeper.findOne({ username: req.body.username });
+      }
+    }
+
+    if (email) {
+      error = 'Email to be unique';
+    }
+
+    if (username) {
+      error = 'Username to be unique';
+    }
+
+    const user = new User(req.body);
     await user.save();
     const token = await user.generateAuthToken();
     res.status(201).send({ user, token });
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send({ message: error || e });
   }
 };
 
-module.exports.connexion = User => async (req, res) => {
+module.exports.connexion = () => async (req, res) => {
+  let user;
+  let error;
   try {
-    const user = await User.findByCredentials(
-      req.body.username,
-      req.body.email,
-      req.body.password,
-      User,
-    );
+    try {
+      user = await Beneficiary.findByCredentials(
+        req.body.username,
+        req.body.email,
+        req.body.password,
+        Beneficiary,
+      );
+    } catch (eb) {
+      try {
+        user = await Donor.findByCredentials(
+          req.body.username,
+          req.body.email,
+          req.body.password,
+          Donor,
+        );
+      } catch (ed) {
+        try {
+          user = await Shopkeeper.findByCredentials(
+            req.body.username,
+            req.body.email,
+            req.body.password,
+            Shopkeeper,
+          );
+        } catch (es) {
+          error = es.message;
+        }
+      }
+    }
+
     const token = await user.generateAuthToken();
 
     user.tokens.forEach((t, i) => {
@@ -45,9 +109,9 @@ module.exports.connexion = User => async (req, res) => {
       });
     });
 
-    res.send({ user, token });
+    return res.status(200).send({ user, token });
   } catch (e) {
-    res.status(400).send();
+    return res.status(400).send({ message: error || e });
   }
 };
 
@@ -62,7 +126,7 @@ module.exports.profil = () => async (req, res) => {
 
     res.send(req.user);
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send({ message: e });
   }
 };
 
@@ -76,8 +140,8 @@ module.exports.profil_update = User => async (req, res) => {
   }
 
   try {
-    const { id } = req.params;
-    const user = await User.findOne({ _id: id });
+    // const { id } = req.params;
+    const user = await User.findOne({ _id: req.user.id });
 
     if (!user) {
       res.status(404).send();
@@ -87,7 +151,7 @@ module.exports.profil_update = User => async (req, res) => {
     await user.save();
     res.send(user);
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send({ message: e });
   }
 };
 

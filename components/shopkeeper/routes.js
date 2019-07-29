@@ -10,7 +10,7 @@ const Shopkeeper = require('./model');
 router.post('/register', shopkeeperCtlr.register);
 router.post('/connexion', shopkeeperCtlr.connexion);
 router.get('/profil/', auth(Shopkeeper), shopkeeperCtlr.profil);
-router.patch('/profil-update/:id', auth(Shopkeeper), shopkeeperCtlr.profil_update);
+router.patch('/profil-update/', auth(Shopkeeper), shopkeeperCtlr.profil_update);
 router.post('/logout', auth(Shopkeeper), shopkeeperCtlr.logout);
 router.post('/logoutAll', auth(Shopkeeper), shopkeeperCtlr.logoutAll);
 

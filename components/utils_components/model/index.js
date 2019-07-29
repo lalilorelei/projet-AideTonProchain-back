@@ -33,8 +33,14 @@ module.exports.preSave = async function(next) {
 };
 
 module.exports.findByCredentials = async (username = '', email = '', password, User) => {
-  // eslint-disable-next-line no-use-before-define
-  const user = await User.findOne({ $or: [{ username }, { email }] });
+  let user;
+  // eslint-disable-next-line global-require
+  const Beneficiary = require('../../beneficiary/model');
+  if (User === Beneficiary) {
+    user = await User.findOne({ username });
+  } else {
+    user = await User.findOne({ $or: [{ username }, { email }] });
+  }
 
   if (!user) {
     throw new Error('Unable to login');
