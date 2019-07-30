@@ -1,6 +1,5 @@
 /* eslint-disable prefer-rest-params */
 /* eslint-disable func-names */
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 

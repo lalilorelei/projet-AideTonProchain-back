@@ -1,19 +1,6 @@
 const mongoose = require('mongoose');
 
 const Shopkeeper = require('./model');
-const utilCtlr = require('../utils_components/controllers/index');
-
-module.exports.register = utilCtlr.register(Shopkeeper);
-
-module.exports.connexion = utilCtlr.connexion(Shopkeeper);
-
-module.exports.profil = utilCtlr.profil(Shopkeeper);
-
-module.exports.profil_update = utilCtlr.profil_update(Shopkeeper);
-
-module.exports.logout = utilCtlr.logout();
-
-module.exports.logoutAll = utilCtlr.logoutAll();
 
 module.exports.product_creation = async (req, res) => {
   try {

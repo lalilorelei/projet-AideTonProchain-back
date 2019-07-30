@@ -1,5 +1,3 @@
-// const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
 const Donor = require('./model');
 const utilCtlr = require('../utils_components/controllers/index');
 

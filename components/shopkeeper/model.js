@@ -72,12 +72,17 @@ const shopkeeperSchema = mongoose.Schema({
     },
     required: true,
   },
+  // products: [
+  //   {
+  //     name: { type: String, required: true, unique: true },
+  //     price: { type: Number, required: true },
+  //     available: { type: Boolean, required: true },
+  //     category: { type: String, required: true },
+  //   },
+  // ],
   products: [
     {
-      name: { type: String, required: true, unique: true },
-      price: { type: Number, required: true },
-      available: { type: Boolean, required: true },
-      category: { type: String, required: true },
+      product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
     },
   ],
   donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donnation' }],

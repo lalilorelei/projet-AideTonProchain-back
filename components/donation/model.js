@@ -3,38 +3,35 @@ const mongoose = require('mongoose');
 // const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
-// const utilModel = require('../utils/model/index');
-
 const donnationSchema = mongoose.Schema({
   created_at: {
     type: Date,
-    required: true,
+    required: false,
   },
   use_at: {
     type: Date,
-    required: true,
-    default: Date.now,
+    required: false,
   },
-  donor_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Donor', required: true },
-  beneficiary_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Beneficiary', required: true },
-  shopkeeper: [
+  donor: { type: mongoose.Schema.Types.ObjectId, ref: 'Donor', required: true },
+  beneficiary: { type: mongoose.Schema.Types.ObjectId, ref: 'Beneficiary', required: true },
+  shopkeeper: { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper', required: true },
+  // product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  products: [
     {
-      type: {
-        shopkeeper_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper', required: true },
-        product_id: [
-          { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper.products', required: true },
-        ],
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
       required: true,
     },
   ],
 });
 
-// donnationSchema.methods.toJSON = utilModel.toJSON('password');
+donnationSchema.pre('save', function(next) {
+  if (!this.created_at) {
+    this.created_at = new Date();
+  }
 
-// donnationSchema.pre('save', utilModel.preSave);
-
-// donnationSchema.statics.findByCredentials = utilModel.findByCredentials;
+  next();
+});
 
 donnationSchema.plugin(uniqueValidator);
 

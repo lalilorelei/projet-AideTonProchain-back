@@ -8,6 +8,7 @@ mongoose
   .connect(`${mongodb.host}:${mongodb.port}/${mongodb.dbName}`, {
     useNewUrlParser: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   .then(() => {
     console.log('Successfully connected to MongoDB');
