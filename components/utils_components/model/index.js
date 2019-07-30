@@ -59,7 +59,7 @@ module.exports.generateAuthToken = role =>
   // eslint-disable-next-line implicit-arrow-linebreak
   async function() {
     const token = jwt.sign({ _id: this._id.toString(), role }, jwtSecret, {
-      expiresIn: '1m',
+      expiresIn: '1d',
     });
 
     this.tokens = this.tokens.concat({ token });

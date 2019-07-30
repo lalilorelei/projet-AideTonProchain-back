@@ -19,14 +19,14 @@ module.exports.logoutAll = utilCtlr.logoutAll();
 
 module.exports.product_creation = async (req, res) => {
   try {
-    const { shopkeeperId } = req.params;
-    const shopkeeper = await Shopkeeper.findById({ _id: shopkeeperId });
+    // const { shopkeeperId } = req.params;
+    const shopkeeper = await Shopkeeper.findById({ _id: req.user.id });
     if (!shopkeeper) {
       res.status(404).send({ error: 'Invalid shopkeeper' });
     }
 
     await Shopkeeper.findOneAndUpdate(
-      { _id: shopkeeperId },
+      { _id: req.user.id },
       { $push: { products: { _id: mongoose.Types.ObjectId(), ...req.body } } },
     );
 
@@ -42,8 +42,8 @@ module.exports.product_creation = async (req, res) => {
 
 module.exports.products = async (req, res) => {
   try {
-    const { shopkeeperId } = req.params;
-    const shopkeeper = await Shopkeeper.findById({ _id: shopkeeperId });
+    // const { shopkeeperId } = req.params;
+    const shopkeeper = await Shopkeeper.findById({ _id: req.user.id });
     if (!shopkeeper) {
       res.status(404).send();
     }
@@ -56,8 +56,8 @@ module.exports.products = async (req, res) => {
 
 module.exports.product = async (req, res) => {
   try {
-    const { shopkeeperId, id } = req.params;
-    const shopkeeper = await Shopkeeper.findById({ _id: shopkeeperId });
+    const { id } = req.params;
+    const shopkeeper = await Shopkeeper.findById({ _id: req.user.id });
     if (!shopkeeper) {
       res.status(404).send({ error: 'Invalid shopkeeper' });
     }
@@ -76,10 +76,10 @@ module.exports.product = async (req, res) => {
 };
 
 module.exports.product_update = async (req, res) => {
-  const { shopkeeperId, id } = req.params;
+  const { id } = req.params;
   const updates = Object.keys(req.body);
   try {
-    const shopkeeper = await Shopkeeper.findById({ _id: shopkeeperId });
+    const shopkeeper = await Shopkeeper.findById({ _id: req.user.id });
     if (!shopkeeper) {
       res.status(404).send({ error: 'Invalid shopkeeper' });
     }
