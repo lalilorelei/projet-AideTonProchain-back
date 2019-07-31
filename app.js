@@ -11,6 +11,7 @@ const beneficiaryRouter = require('./components/beneficiary/routes');
 const donorRouter = require('./components/donor/routes');
 const shopkeeperRouter = require('./components/shopkeeper/routes');
 const connexionRouter = require('./components/connexion/routes');
+const productRouter = require('./components/product/routes');
 
 const app = express();
 
@@ -37,5 +38,6 @@ app.use('/api/beneficiary', beneficiaryRouter);
 app.use('/api/donor', donorRouter);
 app.use('/api/shopkeeper', shopkeeperRouter);
 app.use('/api/connexion', connexionRouter);
+app.use('/api/product', productRouter);
 
 module.exports = app;

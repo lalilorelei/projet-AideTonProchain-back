@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const uniqueValidator = require('mongoose-unique-validator');
 
-const donationSchema = mongoose.Schema({
+const productSchema = mongoose.Schema({
   created_at: {
     type: Date,
   },
@@ -12,17 +12,15 @@ const donationSchema = mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  product: {
-    name: { type: String, required: true, unique: true },
-    price: { type: Number, required: true },
-    available: { type: Boolean, required: true },
-    category: { type: String, required: true },
-  },
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  available: { type: Boolean, required: true },
+  category: { type: String, required: true },
   shopkeeper: { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper', required: true },
 });
 
-donationSchema.plugin(uniqueValidator);
+productSchema.plugin(uniqueValidator);
 
-const Product = mongoose.model('Donation', donationSchema);
+const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;
