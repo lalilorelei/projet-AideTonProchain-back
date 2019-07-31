@@ -14,4 +14,8 @@ router.patch('/profil-update/', auth(Donor), donorCtlr.profil_update);
 router.post('/logout', auth(Donor), donorCtlr.logout);
 router.post('/logoutAll', auth(Donor), donorCtlr.logoutAll);
 
+router.get('/donations/:id', auth(Donor), donorCtlr.donation);
+router.get('/donations', auth(Donor), donorCtlr.donations);
+router.post('/donation', auth(Donor), donorCtlr.do_donation);
+
 module.exports = router;

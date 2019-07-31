@@ -4,16 +4,16 @@ const config = require('config');
 
 const jwtSecret = config.get('dev.jwtSecret');
 
-const Donation = require('./model');
-const Donor = require('../donor/model');
+const Donation = require('../../donation/model');
 
-module.exports.donation = async (req, res) => {
+module.exports.donation = () => async (req, res) => {
   try {
     const decoded = jwt.verify(req.token, jwtSecret);
     const { role } = decoded;
 
     const { id } = req.params;
-    const donation = await Donation.findOne({ _id: id }).populate(role);
+    // const donation = await Donation.findOne({ _id: id }).populate(role);
+    const donation = await Donation.findOne({ _id: id, [role]: req.user.id });
     if (!donation) {
       res.status(404).send();
     }
@@ -24,7 +24,7 @@ module.exports.donation = async (req, res) => {
   }
 };
 
-module.exports.donations = async (req, res) => {
+module.exports.donations = () => async (req, res) => {
   try {
     const decoded = jwt.verify(req.token, jwtSecret);
     const { role } = decoded;
@@ -40,9 +40,9 @@ module.exports.donations = async (req, res) => {
   }
 };
 
-module.exports.do_donation = async (req, res) => {
+module.exports.do_donation = User => async (req, res) => {
   try {
-    const donor = await Donor.findById({ _id: req.user.id });
+    const donor = await User.findById({ _id: req.user.id });
 
     if (!donor) {
       res.status(400).send('Donor not found');
