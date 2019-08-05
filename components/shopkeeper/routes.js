@@ -14,6 +14,8 @@ router.patch('/profil-update/', auth(Shopkeeper), shopkeeperCtlr.profil_update);
 router.post('/logout', auth(Shopkeeper), shopkeeperCtlr.logout);
 router.post('/logoutAll', auth(Shopkeeper), shopkeeperCtlr.logoutAll);
 
+router.get('/disable', auth(Shopkeeper), shopkeeperCtlr.disable);
+
 router.get('/donations/:id', auth(Shopkeeper), shopkeeperCtlr.donation);
 router.get('/donations', auth(Shopkeeper), shopkeeperCtlr.donations);
 router.post('/donation', auth(Shopkeeper), shopkeeperCtlr.do_donation);

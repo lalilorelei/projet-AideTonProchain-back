@@ -8,13 +8,13 @@ const utilModel = require('../utils_components/model/index');
 const beneficiarySchema = mongoose.Schema({
   firstname: {
     type: String,
-    required: true,
     trim: true,
+    default: '',
   },
   lastname: {
     type: String,
-    required: true,
     trim: true,
+    default: '',
   },
   username: {
     type: String,
@@ -48,6 +48,11 @@ const beneficiarySchema = mongoose.Schema({
       }
     },
   },
+  description: {
+    bio: { type: String, required: false },
+    place: { type: String, required: false },
+    need: { type: String, required: false },
+  },
   created_at: {
     type: Date,
   },
@@ -68,7 +73,6 @@ const beneficiarySchema = mongoose.Schema({
       longitude: 0,
     },
   },
-  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donnation', default: [] }],
   tokens: [
     {
       token: {
@@ -77,9 +81,10 @@ const beneficiarySchema = mongoose.Schema({
       },
     },
   ],
+  active: { type: Boolean, default: true },
 });
 
-beneficiarySchema.methods.toJSON = utilModel.toJSON('password');
+beneficiarySchema.methods.toJSON = utilModel.toJSON('password', 'tokens');
 
 beneficiarySchema.pre('save', utilModel.preSave);
 

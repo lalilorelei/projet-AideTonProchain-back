@@ -53,7 +53,6 @@ const donorSchema = mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donation', default: [] }],
   tokens: [
     {
       token: {
@@ -62,9 +61,10 @@ const donorSchema = mongoose.Schema({
       },
     },
   ],
+  active: { type: Boolean, default: true },
 });
 
-donorSchema.methods.toJSON = utilModel.toJSON('password');
+donorSchema.methods.toJSON = utilModel.toJSON('password', 'tokens');
 
 donorSchema.pre('save', utilModel.preSave);
 

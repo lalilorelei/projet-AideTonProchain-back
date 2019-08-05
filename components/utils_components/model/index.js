@@ -2,6 +2,7 @@
 /* eslint-disable func-names */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const validator = require('validator');
 
 const config = require('config');
 
@@ -31,18 +32,27 @@ module.exports.preSave = async function(next) {
   next();
 };
 
-module.exports.findByCredentials = async (username = '', email = '', password, User) => {
+module.exports.findByCredentials = async (login, password, User) => {
+  const data = {
+    username: '',
+    email: '',
+  };
+  if (validator.isEmail(login)) {
+    data.email = login;
+  } else {
+    data.username = login;
+  }
   let user;
   // eslint-disable-next-line global-require
   const Beneficiary = require('../../beneficiary/model');
   if (User === Beneficiary) {
-    user = await User.findOne({ username });
+    user = await Beneficiary.findOne({ username: data.username });
   } else {
-    user = await User.findOne({ $or: [{ username }, { email }] });
+    user = await User.findOne({ $or: [{ username: data.username }, { email: data.email }] });
   }
 
   if (!user) {
-    throw new Error('Unable to login');
+    throw new Error('User not found');
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
@@ -58,7 +68,7 @@ module.exports.generateAuthToken = role =>
   // eslint-disable-next-line implicit-arrow-linebreak
   async function() {
     const token = jwt.sign({ _id: this._id.toString(), role }, jwtSecret, {
-      expiresIn: '1d',
+      expiresIn: '7d',
     });
 
     this.tokens = this.tokens.concat({ token });

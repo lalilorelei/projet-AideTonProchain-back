@@ -12,7 +12,6 @@ const Shopkeeper = require('../../shopkeeper/model');
 module.exports.register = User => async (req, res) => {
   let email;
   let username;
-  let error;
   try {
     email = await Beneficiary.findOne({ email: req.body.email });
 
@@ -39,11 +38,11 @@ module.exports.register = User => async (req, res) => {
     }
 
     if (email) {
-      error = 'Email to be unique';
+      throw new Error('Email to be unique');
     }
 
     if (username) {
-      error = 'Username to be unique';
+      throw new Error('Username to be unique');
     }
 
     const user = new User(req.body);
@@ -51,39 +50,23 @@ module.exports.register = User => async (req, res) => {
     const token = await user.generateAuthToken();
     res.status(201).send({ user, token });
   } catch (e) {
-    res.status(400).send({ message: error || e });
+    res.status(400).send({ error: e.message });
   }
 };
 
 module.exports.connexion = () => async (req, res) => {
   let user;
-  let error;
   try {
     try {
-      user = await Beneficiary.findByCredentials(
-        req.body.username,
-        req.body.email,
-        req.body.password,
-        Beneficiary,
-      );
+      user = await Beneficiary.findByCredentials(req.body.login, req.body.password, Beneficiary);
     } catch (eb) {
       try {
-        user = await Donor.findByCredentials(
-          req.body.username,
-          req.body.email,
-          req.body.password,
-          Donor,
-        );
+        user = await Donor.findByCredentials(req.body.login, req.body.password, Donor);
       } catch (ed) {
         try {
-          user = await Shopkeeper.findByCredentials(
-            req.body.username,
-            req.body.email,
-            req.body.password,
-            Shopkeeper,
-          );
+          user = await Shopkeeper.findByCredentials(req.body.login, req.body.password, Shopkeeper);
         } catch (es) {
-          error = es.message;
+          throw new Error(es.message);
         }
       }
     }
@@ -111,7 +94,7 @@ module.exports.connexion = () => async (req, res) => {
 
     return res.status(200).send({ user, token });
   } catch (e) {
-    return res.status(400).send({ message: error || e });
+    return res.status(400).send({ error: e.message });
   }
 };
 
@@ -124,19 +107,19 @@ module.exports.profil = () => async (req, res) => {
     //   res.status(404).send();
     // }
 
-    res.send(req.user);
+    res.send({ user: req.user });
   } catch (e) {
-    res.status(400).send({ message: e });
+    res.status(400).send({ message: e.message });
   }
 };
 
 module.exports.profil_update = User => async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ['firstname', 'lastname', 'username', 'password'];
+  const allowedUpdates = ['firstname', 'lastname', 'password'];
   const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
   if (!isValidOperation) {
-    res.status(400).send({ error: 'Invalid updates!' });
+    res.status(400).send({ error: 'Invalid updates' });
   }
 
   try {
@@ -144,39 +127,57 @@ module.exports.profil_update = User => async (req, res) => {
     const user = await User.findOne({ _id: req.user.id });
 
     if (!user) {
-      res.status(404).send();
+      res.status(404).send({ error: 'Invalid user' });
     }
 
     updates.forEach(update => (user[update] = req.body[update]));
     await user.save();
-    res.send(user);
+    res.send({ user });
   } catch (e) {
-    res.status(400).send({ message: e });
+    res.status(400).send({ error: e.message });
   }
 };
 
-module.exports.logout = () => async (req, res) => {
-  const lengthBefore = req.user.tokens.length;
+module.exports.logout = User => async (req, res) => {
   try {
-    req.user.tokens = req.user.tokens.filter(token => token.token !== req.token);
+    const user = await User.findOne({ _id: req.user.id });
+    const lengthBefore = user.tokens.length;
 
-    if (req.user.tokens.length === lengthBefore) {
-      res.status(400).send();
+    user.tokens = user.tokens.filter(token => token.token !== req.token);
+
+    if (user.tokens.length === lengthBefore) {
+      res.status(400).send({ error: 'Invalid token' });
     }
 
-    await req.user.save();
-    res.send(req.user);
+    await user.save();
+    res.send({ message: 'Deconnexion' });
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send({ error: e.message });
   }
 };
 
-module.exports.logoutAll = () => async (req, res) => {
+module.exports.logoutAll = User => async (req, res) => {
   try {
-    req.user.tokens = [];
-    await req.user.save();
-    res.send();
+    const user = await User.findOne({ _id: req.user.id });
+    user.tokens = [];
+
+    await user.save();
+    res.send({ user });
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send({ error: e.message });
+  }
+};
+
+module.exports.disable = User => async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate({ _id: req.user.id }, { active: false });
+
+    if (!user) {
+      res.status(404).send({ error: 'Invalid user' });
+    }
+    await user.save();
+    return res.status(200).send({ message: `${user.username}'s profil disable` });
+  } catch (e) {
+    return res.status(500).send({ error: e.message });
   }
 };

@@ -16,44 +16,47 @@ module.exports.product_creation = async (req, res) => {
 
     res.status(201).send(product);
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send({ error: e.message });
   }
 };
 
 module.exports.product = async (req, res) => {
   try {
-    const shopkeeper = await Shopkeeper.findById({ _id: req.user.id });
+    const { shopkeeperId, id } = req.params;
+
+    const shopkeeper = await Shopkeeper.findById({ _id: shopkeeperId });
     if (!shopkeeper) {
       res.status(404).send({ error: 'Invalid shopkeeper' });
     }
 
-    const { id } = req.params;
-    const product = await Product.findOne({ _id: id, shopkeeper: req.user.id });
+    const product = await Product.findOne({ _id: id, shopkeeper: shopkeeperId });
     if (!product) {
       res.status(404).send({ error: 'Invalid product' });
     }
 
-    res.send(product);
+    res.send({ product, shopkeeper });
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send({ error: e.message });
   }
 };
 
 module.exports.products = async (req, res) => {
   try {
-    const shopkeeper = await Shopkeeper.findById({ _id: req.user.id });
+    const { shopkeeperId } = req.params;
+
+    const shopkeeper = await Shopkeeper.findById({ _id: shopkeeperId });
     if (!shopkeeper) {
       res.status(404).send({ error: 'Invalid shopkeeper' });
     }
 
-    const products = await Product.find({ shopkeeper: req.user.id });
+    const products = await Product.find({ shopkeeper: shopkeeperId });
     if (!products) {
-      res.status(404).send();
+      res.status(404).send({ error: 'Invalid product' });
     }
 
-    res.send(products);
+    res.send({ products, shopkeeper });
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send({ error: e.message });
   }
 };
 
@@ -77,7 +80,7 @@ module.exports.product_update = async (req, res) => {
 
     res.send(product);
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send({ error: e.message });
   }
 };
 
@@ -96,6 +99,6 @@ module.exports.delete = async (req, res) => {
 
     res.send(product);
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send({ error: e.message });
   }
 };

@@ -28,6 +28,16 @@ const shopkeeperSchema = mongoose.Schema({
     required: true,
     trim: true,
   },
+  categories: [
+    {
+      category: {
+        type: String,
+        required: true,
+        name: String,
+      },
+    },
+  ],
+  description: { type: String, required: false },
   email: {
     type: String,
     unique: true,
@@ -72,20 +82,6 @@ const shopkeeperSchema = mongoose.Schema({
     },
     required: true,
   },
-  // products: [
-  //   {
-  //     name: { type: String, required: true, unique: true },
-  //     price: { type: Number, required: true },
-  //     available: { type: Boolean, required: true },
-  //     category: { type: String, required: true },
-  //   },
-  // ],
-  products: [
-    {
-      product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    },
-  ],
-  donnations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Donnation' }],
   tokens: [
     {
       token: {
@@ -94,9 +90,10 @@ const shopkeeperSchema = mongoose.Schema({
       },
     },
   ],
+  active: { type: Boolean, default: true },
 });
 
-shopkeeperSchema.methods.toJSON = utilModel.toJSON('password');
+shopkeeperSchema.methods.toJSON = utilModel.toJSON('password', 'tokens');
 
 shopkeeperSchema.pre('save', utilModel.preSave);
 

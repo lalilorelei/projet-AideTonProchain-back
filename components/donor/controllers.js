@@ -3,16 +3,13 @@ const utilCtlr = require('../utils_components/controllers/index');
 const donationCtlr = require('../utils_components/controllers/donation');
 
 module.exports.register = utilCtlr.register(Donor);
-
-module.exports.connexion = utilCtlr.connexion(Donor);
-
+module.exports.connexion = utilCtlr.connexion();
 module.exports.profil = utilCtlr.profil();
-
 module.exports.profil_update = utilCtlr.profil_update(Donor);
+module.exports.logout = utilCtlr.logout(Donor);
+module.exports.logoutAll = utilCtlr.logoutAll(Donor);
 
-module.exports.logout = utilCtlr.logout();
-
-module.exports.logoutAll = utilCtlr.logoutAll();
+module.exports.disable = utilCtlr.disable(Donor);
 
 module.exports.donation = donationCtlr.donation();
 module.exports.donations = donationCtlr.donations();

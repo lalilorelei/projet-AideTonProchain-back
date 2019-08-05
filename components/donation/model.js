@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 const mongoose = require('mongoose');
 // const validator = require('validator');
-const uniqueValidator = require('mongoose-unique-validator');
+// const uniqueValidator = require('mongoose-unique-validator');
 
 const donnationSchema = mongoose.Schema({
   created_at: {
@@ -13,9 +13,8 @@ const donnationSchema = mongoose.Schema({
     required: false,
   },
   donor: { type: mongoose.Schema.Types.ObjectId, ref: 'Donor', required: true },
-  beneficiary: { type: mongoose.Schema.Types.ObjectId, ref: 'Beneficiary', required: true },
+  beneficiary: { type: String, required: true },
   shopkeeper: { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper', required: true },
-  // product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
   products: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -33,8 +32,8 @@ donnationSchema.pre('save', function(next) {
   next();
 });
 
-donnationSchema.plugin(uniqueValidator);
+// donnationSchema.plugin(uniqueValidator);
 
-const Donnation = mongoose.model('Donnation', donnationSchema);
+const Donation = mongoose.model('Donation', donnationSchema);
 
-module.exports = Donnation;
+module.exports = Donation;

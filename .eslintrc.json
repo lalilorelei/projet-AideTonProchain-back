@@ -20,7 +20,8 @@
     "no-underscore-dangle": "off",
     "linebreak-style": 0,
     "space-before-function-paren": "off",
-    "no-return-assign": "off"
+    "no-return-assign": "off",
+    "arrow-parens": "off"
   },
   "plugins": ["security"]
 }

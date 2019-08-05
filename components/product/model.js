@@ -15,7 +15,10 @@ const productSchema = mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   available: { type: Boolean, required: true },
-  category: { type: String, required: true },
+  description: {
+    type: String,
+    required: false,
+  },
   shopkeeper: { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper', required: true },
 });
 
