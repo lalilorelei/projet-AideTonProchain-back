@@ -181,3 +181,31 @@ module.exports.disable = User => async (req, res) => {
     return res.status(500).send({ error: e.message });
   }
 };
+
+module.exports.search = User => async (req, res) => {
+  try {
+    const { q } = req.query;
+    let searchResult;
+
+    await User.find({
+      username: {
+        $regex: q,
+        $options: 'i',
+      },
+    })
+      .then(result => {
+        searchResult = result;
+      })
+      .catch(e => {
+        console.log(e);
+      });
+
+    if (!searchResult) {
+      res.status(404).send({ error: 'Invalid search' });
+    }
+
+    res.status(200).send({ result: searchResult });
+  } catch (e) {
+    res.status(500).send({ error: e.message });
+  }
+};
