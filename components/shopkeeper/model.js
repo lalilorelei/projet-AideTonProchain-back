@@ -28,7 +28,7 @@ const shopkeeperSchema = mongoose.Schema({
     required: true,
     trim: true,
   },
-  phone: { type: String, required: false },
+  phone: { type: Number, required: false },
   opening_hours: {
     lundi: {
       morning_open: Number,
