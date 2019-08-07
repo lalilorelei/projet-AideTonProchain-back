@@ -115,7 +115,7 @@ module.exports.profil = () => async (req, res) => {
 
 module.exports.profil_update = User => async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ['firstname', 'lastname', 'password'];
+  const allowedUpdates = ['firstname', 'lastname', 'password', 'phone', 'opening_hours'];
   const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
   if (!isValidOperation) {

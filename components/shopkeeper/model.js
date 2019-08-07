@@ -28,6 +28,51 @@ const shopkeeperSchema = mongoose.Schema({
     required: true,
     trim: true,
   },
+  phone: { type: String, required: false },
+  opening_hours: {
+    lundi: {
+      morning_open: Number,
+      morning_close: Number,
+      afternoon_open: Number,
+      afternoon_close: Number,
+    },
+    mardi: {
+      morning_open: Number,
+      morning_close: Number,
+      afternoon_open: Number,
+      afternoon_close: Number,
+    },
+    mercredi: {
+      morning_open: Number,
+      morning_close: Number,
+      afternoon_open: Number,
+      afternoon_close: Number,
+    },
+    jeudi: {
+      morning_open: Number,
+      morning_close: Number,
+      afternoon_open: Number,
+      afternoon_close: Number,
+    },
+    vendredi: {
+      morning_open: Number,
+      morning_close: Number,
+      afternoon_open: Number,
+      afternoon_close: Number,
+    },
+    samedi: {
+      morning_open: Number,
+      morning_close: Number,
+      afternoon_open: Number,
+      afternoon_close: Number,
+    },
+    dimanche: {
+      morning_open: Number,
+      morning_close: Number,
+      afternoon_open: Number,
+      afternoon_close: Number,
+    },
+  },
   categories: [
     {
       type: String,
