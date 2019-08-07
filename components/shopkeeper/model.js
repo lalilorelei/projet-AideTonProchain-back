@@ -30,11 +30,8 @@ const shopkeeperSchema = mongoose.Schema({
   },
   categories: [
     {
-      category: {
-        type: String,
-        required: true,
-        name: String,
-      },
+      type: String,
+      required: true,
     },
   ],
   description: { type: String, required: false },

@@ -15,4 +15,6 @@ module.exports.donation = donationCtlr.donation();
 module.exports.donations = donationCtlr.donations();
 module.exports.do_donation = donationCtlr.do_donation(Shopkeeper);
 
+module.exports.donation_used = donationCtlr.donation_used(Shopkeeper);
+
 module.exports.search = utilCtlr.search(Shopkeeper);

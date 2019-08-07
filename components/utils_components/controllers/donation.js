@@ -144,3 +144,26 @@ module.exports.do_donation = User => async (req, res) => {
     return res.status(400).send({ message: e });
   }
 };
+
+module.exports.donation_used = () => async (req, res) => {
+  try {
+    const decoded = jwt.verify(req.token, jwtSecret);
+    const { role } = decoded;
+
+    const { id } = req.params;
+
+    const donation = await Donation.findOneAndUpdate(
+      { _id: id, [role]: req.user.id },
+      { used_at: new Date() },
+    );
+
+    if (!donation) {
+      return res.status(404).send({ error: 'Invalid donation' });
+    }
+
+    await donation.save();
+    return res.send({ donation });
+  } catch (e) {
+    return res.status(400).send({ message: e });
+  }
+};

@@ -8,7 +8,7 @@ const donnationSchema = mongoose.Schema({
     type: Date,
     required: false,
   },
-  use_at: {
+  used_at: {
     type: Date,
     required: false,
   },

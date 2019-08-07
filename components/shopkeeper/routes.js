@@ -20,4 +20,6 @@ router.get('/donations/:id', auth(Shopkeeper), shopkeeperCtlr.donation);
 router.get('/donations', auth(Shopkeeper), shopkeeperCtlr.donations);
 router.post('/donation', auth(Shopkeeper), shopkeeperCtlr.do_donation);
 
+router.patch('/donation-used/:id', auth(Shopkeeper), shopkeeperCtlr.donation_used);
+
 module.exports = router;
