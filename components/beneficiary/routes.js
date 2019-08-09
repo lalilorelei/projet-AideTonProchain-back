@@ -8,10 +8,17 @@ const Beneficiary = require('./model');
 const beneficiaryCtlr = require('./controllers');
 const shopkeeperCtlr = require('../shopkeeper/controllers');
 
-router.post('/register', beneficiaryCtlr.register);
+const utilCtlr = require('../utils_components/controllers/index');
+
+router.post('/register', utilCtlr.upload.single('avatar'), beneficiaryCtlr.register);
 router.post('/connexion', beneficiaryCtlr.connexion);
 router.get('/profil/', auth(Beneficiary), beneficiaryCtlr.profil);
-router.patch('/profil-update/', auth(Beneficiary), beneficiaryCtlr.profil_update);
+router.patch(
+  '/profil-update/',
+  auth(Beneficiary),
+  utilCtlr.upload.single('avatar'),
+  beneficiaryCtlr.profil_update,
+);
 router.post('/logout', auth(Beneficiary), beneficiaryCtlr.logout);
 router.post('/logoutAll', auth(Beneficiary), beneficiaryCtlr.logoutAll);
 

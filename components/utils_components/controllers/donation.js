@@ -61,14 +61,11 @@ module.exports.donations = () => async (req, res) => {
       .populate({ path: 'shopkeeper', select: ['shopkeeper_name', 'localisation'] })
       .populate('products')
       .then(result => {
-        console.log(result);
         donations = result;
       })
       .catch(e => {
         console.log(e);
       });
-
-    console.log(donations);
 
     if (!donations) {
       return res.status(404).send({ error: 'Invalid donation' });

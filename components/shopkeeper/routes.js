@@ -7,10 +7,17 @@ const router = express.Router();
 const shopkeeperCtlr = require('./controllers');
 const Shopkeeper = require('./model');
 
-router.post('/register', shopkeeperCtlr.register);
+const utilCtlr = require('../utils_components/controllers/index');
+
+router.post('/register', utilCtlr.upload.single('avatar'), shopkeeperCtlr.register);
 router.post('/connexion', shopkeeperCtlr.connexion);
 router.get('/profil/', auth(Shopkeeper), shopkeeperCtlr.profil);
-router.patch('/profil-update/', auth(Shopkeeper), shopkeeperCtlr.profil_update);
+router.patch(
+  '/profil-update/',
+  auth(Shopkeeper),
+  utilCtlr.upload.single('avatar'),
+  shopkeeperCtlr.profil_update,
+);
 router.post('/logout', auth(Shopkeeper), shopkeeperCtlr.logout);
 router.post('/logoutAll', auth(Shopkeeper), shopkeeperCtlr.logoutAll);
 

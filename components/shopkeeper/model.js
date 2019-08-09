@@ -103,6 +103,7 @@ const shopkeeperSchema = mongoose.Schema({
       }
     },
   },
+  avatar: { type: Buffer, required: false },
   created_at: {
     type: Date,
   },

@@ -1,4 +1,5 @@
 const express = require('express');
+// const multer = require('multer');
 
 const auth = require('../../middlewares/auth');
 
@@ -10,10 +11,17 @@ const Donor = require('./model');
 const beneficiaryCtlr = require('../beneficiary/controllers');
 const shopkeeperCtlr = require('../shopkeeper/controllers');
 
-router.post('/register', donorCtlr.register);
+const utilCtlr = require('../utils_components/controllers/index');
+
+router.post('/register', utilCtlr.upload.single('avatar'), donorCtlr.register);
 router.post('/connexion', donorCtlr.connexion);
 router.get('/profil/', auth(Donor), donorCtlr.profil);
-router.patch('/profil-update/', auth(Donor), donorCtlr.profil_update);
+router.patch(
+  '/profil-update/',
+  auth(Donor),
+  utilCtlr.upload.single('avatar'),
+  donorCtlr.profil_update,
+);
 router.post('/logout', auth(Donor), donorCtlr.logout);
 router.post('/logoutAll', auth(Donor), donorCtlr.logoutAll);
 
@@ -28,5 +36,8 @@ router.get('/search-shopkeeper', auth(Donor), shopkeeperCtlr.search);
 
 router.get('/shopkeepers', auth(Donor), shopkeeperCtlr.shopkeeperList);
 router.get('/shopkeepers/:id', auth(Donor), shopkeeperCtlr.shopkeeperSingle);
+
+router.get('/beneficiaries', auth(Donor), beneficiaryCtlr.beneficiaryList);
+router.get('/beneficiaries/:id', auth(Donor), beneficiaryCtlr.beneficiarySingle);
 
 module.exports = router;

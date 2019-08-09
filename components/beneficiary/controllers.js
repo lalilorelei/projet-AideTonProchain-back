@@ -17,3 +17,31 @@ module.exports.donation = donationCtlr.donation();
 module.exports.donations = donationCtlr.donations();
 
 module.exports.search = utilCtlr.search(Beneficiary);
+
+module.exports.beneficiaryList = async (req, res) => {
+  try {
+    const beneficiaries = await Beneficiary.find({});
+
+    if (!beneficiaries) {
+      return res.status(404).send({ error: 'No shopkeeper' });
+    }
+
+    return res.status(200).send({ beneficiaries });
+  } catch (e) {
+    return res.status(500).send({ message: e.message });
+  }
+};
+
+module.exports.beneficiarySingle = async (req, res) => {
+  try {
+    const beneficiary = await Beneficiary.findOne({ _id: req.params.id });
+
+    if (!beneficiary) {
+      return res.status(404).send({ error: 'Invalid beneficiary' });
+    }
+
+    return res.status(200).send({ beneficiary });
+  } catch (e) {
+    return res.status(500).send({ message: e.message });
+  }
+};

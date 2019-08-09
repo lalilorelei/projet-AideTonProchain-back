@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const sharp = require('sharp');
 
 const config = require('config');
 
@@ -46,6 +48,16 @@ module.exports.register = User => async (req, res) => {
     }
 
     const user = new User(req.body);
+
+    if (req.file !== undefined) {
+      const buffer = await sharp(req.file.buffer)
+        .resize({ width: 250, height: 250 })
+        .png()
+        .toBuffer();
+
+      user.avatar = buffer;
+    }
+
     await user.save();
     const token = await user.generateAuthToken();
     res.status(201).send({ user, token });
@@ -74,8 +86,7 @@ module.exports.connexion = () => async (req, res) => {
     const token = await user.generateAuthToken();
 
     user.tokens.forEach((t, i) => {
-      jwt.verify(t.token, jwtSecret, (err, decoded) => {
-        console.log(decoded);
+      jwt.verify(t.token, jwtSecret, err => {
         if (err) {
           if (err.message) {
             user.tokens.splice(i, 1);
@@ -113,9 +124,29 @@ module.exports.profil = () => async (req, res) => {
   }
 };
 
+module.exports.upload = multer({
+  limits: {
+    fileSize: 1000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error('Please upload an image'));
+    }
+
+    return cb(undefined, true);
+  },
+});
+
 module.exports.profil_update = User => async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ['firstname', 'lastname', 'password', 'phone', 'opening_hours'];
+  const allowedUpdates = [
+    'firstname',
+    'lastname',
+    'password',
+    'phone',
+    'opening_hours',
+    'localisation',
+  ];
   const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
   if (!isValidOperation) {
@@ -123,7 +154,6 @@ module.exports.profil_update = User => async (req, res) => {
   }
 
   try {
-    // const { id } = req.params;
     const user = await User.findOne({ _id: req.user.id });
 
     if (!user) {
@@ -131,6 +161,16 @@ module.exports.profil_update = User => async (req, res) => {
     }
 
     updates.forEach(update => (user[update] = req.body[update]));
+
+    if (req.file !== undefined) {
+      const buffer = await sharp(req.file.buffer)
+        .resize({ width: 250, height: 250 })
+        .png()
+        .toBuffer();
+
+      user.avatar = buffer;
+    }
+
     await user.save();
     res.send({ user });
   } catch (e) {

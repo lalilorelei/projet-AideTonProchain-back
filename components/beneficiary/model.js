@@ -53,6 +53,7 @@ const beneficiarySchema = mongoose.Schema({
     place: { type: String, required: false },
     need: { type: String, required: false },
   },
+  avatar: { type: Buffer, required: false },
   created_at: {
     type: Date,
   },
