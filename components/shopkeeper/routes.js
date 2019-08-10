@@ -9,15 +9,10 @@ const Shopkeeper = require('./model');
 
 const utilCtlr = require('../utils_components/controllers/index');
 
-router.post('/register', utilCtlr.upload.single('avatar'), shopkeeperCtlr.register);
+router.post('/register', shopkeeperCtlr.register);
 router.post('/connexion', shopkeeperCtlr.connexion);
 router.get('/profil/', auth(Shopkeeper), shopkeeperCtlr.profil);
-router.patch(
-  '/profil-update/',
-  auth(Shopkeeper),
-  utilCtlr.upload.single('avatar'),
-  shopkeeperCtlr.profil_update,
-);
+router.patch('/profil-update/', auth(Shopkeeper), shopkeeperCtlr.profil_update);
 router.post('/logout', auth(Shopkeeper), shopkeeperCtlr.logout);
 router.post('/logoutAll', auth(Shopkeeper), shopkeeperCtlr.logoutAll);
 
@@ -28,5 +23,12 @@ router.get('/donations', auth(Shopkeeper), shopkeeperCtlr.donations);
 router.post('/donation', auth(Shopkeeper), shopkeeperCtlr.do_donation);
 
 router.patch('/donation-used/:id', auth(Shopkeeper), shopkeeperCtlr.donation_used);
+
+router.post(
+  '/upload',
+  auth(Shopkeeper),
+  utilCtlr.upload.single('avatar'),
+  shopkeeperCtlr.upload_avatar,
+);
 
 module.exports = router;

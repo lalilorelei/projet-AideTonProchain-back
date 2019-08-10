@@ -124,6 +124,46 @@ module.exports.profil = () => async (req, res) => {
   }
 };
 
+module.exports.profil_update = User => async (req, res) => {
+  try {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = [
+      'firstname',
+      'lastname',
+      'password',
+      'phone',
+      'opening_hours',
+      'localisation',
+    ];
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+
+    if (!isValidOperation) {
+      res.status(400).send({ error: 'Invalid updates' });
+    }
+
+    // const user = await User.findOne({ _id: '5d4293a7bb396f07a1aae6ee' });
+    const user = await User.findOne({ _id: req.user.id });
+
+    if (!user) {
+      res.status(404).send({ error: 'Invalid user' });
+    }
+
+    updates.forEach(update => (user[update] = req.body[update]));
+
+    await user.save();
+    res.status(201).send({ user });
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+};
+
+const storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: (req, file, cb) => {
+    cb(null, `avatar-${Date.now()}${file.originalname}`);
+  },
+});
+
 module.exports.upload = multer({
   limits: {
     fileSize: 1000000,
@@ -135,24 +175,10 @@ module.exports.upload = multer({
 
     return cb(undefined, true);
   },
+  storage,
 });
 
-module.exports.profil_update = User => async (req, res) => {
-  const updates = Object.keys(req.body);
-  const allowedUpdates = [
-    'firstname',
-    'lastname',
-    'password',
-    'phone',
-    'opening_hours',
-    'localisation',
-  ];
-  const isValidOperation = updates.every(update => allowedUpdates.includes(update));
-
-  if (!isValidOperation) {
-    res.status(400).send({ error: 'Invalid updates' });
-  }
-
+module.exports.upload_avatar = User => async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user.id });
 
@@ -160,19 +186,23 @@ module.exports.profil_update = User => async (req, res) => {
       res.status(404).send({ error: 'Invalid user' });
     }
 
-    updates.forEach(update => (user[update] = req.body[update]));
-
     if (req.file !== undefined) {
-      const buffer = await sharp(req.file.buffer)
-        .resize({ width: 250, height: 250 })
-        .png()
-        .toBuffer();
-
-      user.avatar = buffer;
+      user.avatar = `uploads/${req.file.filename}`;
+    } else {
+      res.status(404).send({ error: 'Invalid file' });
     }
 
+    // if (req.file !== undefined) {
+    //   const buffer = await sharp(req.file.buffer)
+    //     .resize({ width: 250, height: 250 })
+    //     .png()
+    //     .toBuffer();
+
+    //   user.avatar = buffer;
+    // }
+
     await user.save();
-    res.send({ user });
+    res.status(201).send({ user });
   } catch (e) {
     res.status(400).send({ error: e.message });
   }

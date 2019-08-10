@@ -18,6 +18,8 @@ module.exports.donations = donationCtlr.donations();
 
 module.exports.search = utilCtlr.search(Beneficiary);
 
+module.exports.upload_avatar = utilCtlr.upload_avatar(Beneficiary);
+
 module.exports.beneficiaryList = async (req, res) => {
   try {
     const beneficiaries = await Beneficiary.find({});

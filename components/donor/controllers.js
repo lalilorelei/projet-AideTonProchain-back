@@ -14,3 +14,5 @@ module.exports.disable = utilCtlr.disable(Donor);
 module.exports.donation = donationCtlr.donation();
 module.exports.donations = donationCtlr.donations();
 module.exports.do_donation = donationCtlr.do_donation(Donor);
+
+module.exports.upload_avatar = utilCtlr.upload_avatar(Donor);

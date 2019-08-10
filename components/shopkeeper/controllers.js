@@ -19,6 +19,8 @@ module.exports.donation_used = donationCtlr.donation_used(Shopkeeper);
 
 module.exports.search = utilCtlr.search(Shopkeeper);
 
+module.exports.upload_avatar = utilCtlr.upload_avatar(Shopkeeper);
+
 module.exports.shopkeeperList = async (req, res) => {
   try {
     const shopkeepers = await Shopkeeper.find({});

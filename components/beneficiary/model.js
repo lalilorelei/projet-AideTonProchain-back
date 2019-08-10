@@ -53,7 +53,7 @@ const beneficiarySchema = mongoose.Schema({
     place: { type: String, required: false },
     need: { type: String, required: false },
   },
-  avatar: { type: Buffer, required: false },
+  avatar: { type: String, required: false, default: './uploads/avatar-1565458022448avatar.png' },
   created_at: {
     type: Date,
   },
