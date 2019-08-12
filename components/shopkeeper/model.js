@@ -28,55 +28,56 @@ const shopkeeperSchema = mongoose.Schema({
     required: true,
     trim: true,
   },
-  phone: { type: Number, required: false },
+  phone: { type: Number, required: true, default: 0 },
   opening_hours: {
-    lundi: {
-      morning_open: Number,
-      morning_close: Number,
-      afternoon_open: Number,
-      afternoon_close: Number,
+    monday: {
+      morning_open: { type: Number, required: true, default: 0 },
+      morning_close: { type: Number, required: true, default: 0 },
+      afternoon_open: { type: Number, required: true, default: 0 },
+      afternoon_close: { type: Number, required: true, default: 0 },
     },
-    mardi: {
-      morning_open: Number,
-      morning_close: Number,
-      afternoon_open: Number,
-      afternoon_close: Number,
+    tuesday: {
+      morning_open: { type: Number, required: true, default: 0 },
+      morning_close: { type: Number, required: true, default: 0 },
+      afternoon_open: { type: Number, required: true, default: 0 },
+      afternoon_close: { type: Number, required: true, default: 0 },
     },
-    mercredi: {
-      morning_open: Number,
-      morning_close: Number,
-      afternoon_open: Number,
-      afternoon_close: Number,
+    thursday: {
+      morning_open: { type: Number, required: true, default: 0 },
+      morning_close: { type: Number, required: true, default: 0 },
+      afternoon_open: { type: Number, required: true, default: 0 },
+      afternoon_close: { type: Number, required: true, default: 0 },
     },
-    jeudi: {
-      morning_open: Number,
-      morning_close: Number,
-      afternoon_open: Number,
-      afternoon_close: Number,
+    wednesday: {
+      morning_open: { type: Number, required: true, default: 0 },
+      morning_close: { type: Number, required: true, default: 0 },
+      afternoon_open: { type: Number, required: true, default: 0 },
+      afternoon_close: { type: Number, required: true, default: 0 },
     },
-    vendredi: {
-      morning_open: Number,
-      morning_close: Number,
-      afternoon_open: Number,
-      afternoon_close: Number,
+    friday: {
+      morning_open: { type: Number, required: true, default: 0 },
+      morning_close: { type: Number, required: true, default: 0 },
+      afternoon_open: { type: Number, required: true, default: 0 },
+      afternoon_close: { type: Number, required: true, default: 0 },
     },
-    samedi: {
-      morning_open: Number,
-      morning_close: Number,
-      afternoon_open: Number,
-      afternoon_close: Number,
+    saturday: {
+      morning_open: { type: Number, required: true, default: 0 },
+      morning_close: { type: Number, required: true, default: 0 },
+      afternoon_open: { type: Number, required: true, default: 0 },
+      afternoon_close: { type: Number, required: true, default: 0 },
     },
-    dimanche: {
-      morning_open: Number,
-      morning_close: Number,
-      afternoon_open: Number,
-      afternoon_close: Number,
+    sunday: {
+      morning_open: { type: Number, required: true, default: 0 },
+      morning_close: { type: Number, required: true, default: 0 },
+      afternoon_open: { type: Number, required: true, default: 0 },
+      afternoon_close: { type: Number, required: true, default: 0 },
     },
   },
   categories: [
     {
       type: String,
       required: true,
+      default: [],
     },
   ],
   description: { type: String, required: false },
@@ -103,7 +104,7 @@ const shopkeeperSchema = mongoose.Schema({
       }
     },
   },
-  avatar: { type: String, required: false, default: './uploads/avatar-1565458022448avatar.png' },
+  avatar: { type: String, required: true, default: './uploads/avatar-1565458022448avatar.png' },
   created_at: {
     type: Date,
   },

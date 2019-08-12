@@ -49,11 +49,11 @@ const beneficiarySchema = mongoose.Schema({
     },
   },
   description: {
-    bio: { type: String, required: false },
-    place: { type: String, required: false },
-    need: { type: String, required: false },
+    bio: { type: String, required: true, default: '' },
+    place: { type: String, required: true, default: '' },
+    need: { type: String, required: true, default: '' },
   },
-  avatar: { type: String, required: false, default: './uploads/avatar-1565458022448avatar.png' },
+  avatar: { type: String, required: true, default: './uploads/avatar-1565458022448avatar.png' },
   created_at: {
     type: Date,
   },

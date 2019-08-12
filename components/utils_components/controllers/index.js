@@ -49,15 +49,6 @@ module.exports.register = User => async (req, res) => {
 
     const user = new User(req.body);
 
-    if (req.file !== undefined) {
-      const buffer = await sharp(req.file.buffer)
-        .resize({ width: 250, height: 250 })
-        .png()
-        .toBuffer();
-
-      user.avatar = buffer;
-    }
-
     await user.save();
     const token = await user.generateAuthToken();
     res.status(201).send({ user, token });
@@ -141,7 +132,6 @@ module.exports.profil_update = User => async (req, res) => {
       res.status(400).send({ error: 'Invalid updates' });
     }
 
-    // const user = await User.findOne({ _id: '5d4293a7bb396f07a1aae6ee' });
     const user = await User.findOne({ _id: req.user.id });
 
     if (!user) {
@@ -157,12 +147,12 @@ module.exports.profil_update = User => async (req, res) => {
   }
 };
 
-const storage = multer.diskStorage({
-  destination: './uploads/',
-  filename: (req, file, cb) => {
-    cb(null, `avatar-${Date.now()}${file.originalname}`);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: './uploads/',
+//   filename: async (req, file, cb) => {
+//     cb(null, `avatar-${Date.now()}${file.originalname}`);
+//   },
+// });
 
 module.exports.upload = multer({
   limits: {
@@ -172,10 +162,9 @@ module.exports.upload = multer({
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
       return cb(new Error('Please upload an image'));
     }
-
     return cb(undefined, true);
   },
-  storage,
+  // storage,
 });
 
 module.exports.upload_avatar = User => async (req, res) => {
@@ -187,19 +176,14 @@ module.exports.upload_avatar = User => async (req, res) => {
     }
 
     if (req.file !== undefined) {
-      user.avatar = `uploads/${req.file.filename}`;
+      const buffer = await sharp(req.file.buffer)
+        .resize({ width: 300, height: 300 })
+        .png()
+        .toBuffer();
+      user.avatar = buffer;
     } else {
       res.status(404).send({ error: 'Invalid file' });
     }
-
-    // if (req.file !== undefined) {
-    //   const buffer = await sharp(req.file.buffer)
-    //     .resize({ width: 250, height: 250 })
-    //     .png()
-    //     .toBuffer();
-
-    //   user.avatar = buffer;
-    // }
 
     await user.save();
     res.status(201).send({ user });
