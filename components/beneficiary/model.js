@@ -48,12 +48,13 @@ const beneficiarySchema = mongoose.Schema({
       }
     },
   },
-  description: {
-    bio: { type: String, required: true, default: '' },
-    place: { type: String, required: true, default: '' },
-    need: { type: String, required: true, default: '' },
-  },
-  avatar: { type: String, required: true, default: './uploads/avatar-1565458022448avatar.png' },
+  // description: {
+  //   bio: { type: String, required: false, default: '' },
+  //   place: { type: String, required: false, default: '' },
+  //   need: { type: String, required: false, default: '' },
+  // },
+  description: { type: String, required: false },
+  avatar: { type: Buffer, required: false },
   created_at: {
     type: Date,
   },
@@ -74,6 +75,7 @@ const beneficiarySchema = mongoose.Schema({
       longitude: 0,
     },
   },
+  distance: { type: Number, required: false, default: 0 },
   tokens: [
     {
       token: {

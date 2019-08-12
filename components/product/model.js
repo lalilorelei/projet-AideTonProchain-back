@@ -17,7 +17,7 @@ const productSchema = mongoose.Schema({
   available: { type: Boolean, required: true, default: true },
   description: {
     type: String,
-    required: true,
+    required: false,
     default: '',
   },
   shopkeeper: { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper', required: true },

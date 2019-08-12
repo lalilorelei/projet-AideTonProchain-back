@@ -45,7 +45,7 @@ const donorSchema = mongoose.Schema({
       }
     },
   },
-  avatar: { type: Buffer, required: true, default: '' },
+  avatar: { type: Buffer, required: false },
   created_at: {
     type: Date,
   },

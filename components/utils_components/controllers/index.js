@@ -125,6 +125,8 @@ module.exports.profil_update = User => async (req, res) => {
       'phone',
       'opening_hours',
       'localisation',
+      'avatar',
+      'description',
     ];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 

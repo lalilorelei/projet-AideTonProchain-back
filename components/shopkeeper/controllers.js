@@ -1,3 +1,4 @@
+const geolib = require('geolib');
 const Shopkeeper = require('./model');
 const utilCtlr = require('../utils_components/controllers/index');
 const donationCtlr = require('../utils_components/controllers/donation');
@@ -44,6 +45,37 @@ module.exports.shopkeeperSingle = async (req, res) => {
     }
 
     return res.status(200).send({ shopkeeper });
+  } catch (e) {
+    return res.status(500).send({ message: e.message });
+  }
+};
+
+module.exports.shopkeeperDistance = async (req, res) => {
+  try {
+    const { latitude, longitude, km } = req.body;
+    const shopkeepers = await Shopkeeper.find({});
+
+    if (!shopkeepers) {
+      return res.status(404).send({ error: 'No shopkeeper' });
+    }
+
+    const shops = [...shopkeepers];
+
+    const thirty = shops.filter(shop => {
+      const distance = geolib.getDistance(
+        { latitude, longitude },
+        { latitude: shop.localisation.latitude, longitude: shop.localisation.longitude },
+      );
+      shop.distance = Number((distance / 1000).toFixed(1));
+      console.log(shop.distance, distance);
+      return shop.distance < km;
+    });
+
+    if (thirty) {
+      thirty.sort((a, b) => (a.distance > b.distance ? 1 : -1));
+    }
+
+    return res.status(200).send({ shopkeepers: thirty });
   } catch (e) {
     return res.status(500).send({ message: e.message });
   }
