@@ -22,6 +22,9 @@ router.get('/disable', auth(Beneficiary), beneficiaryCtlr.disable);
 router.get('/donations/:id', auth(Beneficiary), beneficiaryCtlr.donation);
 router.get('/donations', auth(Beneficiary), beneficiaryCtlr.donations);
 
+router.post('/shopkeepers-distance', auth(Beneficiary), shopkeeperCtlr.shopkeeperDistance);
+router.post('/beneficiaries-distance', auth(Beneficiary), beneficiaryCtlr.beneficiaryDistance);
+
 router.get('/shopkeepers', auth(Beneficiary), shopkeeperCtlr.shopkeeperList);
 router.get('/shopkeepers/:id', auth(Beneficiary), shopkeeperCtlr.shopkeeperSingle);
 

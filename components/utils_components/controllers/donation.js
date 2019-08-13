@@ -23,25 +23,24 @@ module.exports.donation = () => async (req, res) => {
       return res.status(404).send({ error: 'Invalid donation' });
     }
 
-    let beneficiaryUsername;
+    // let beneficiaryUsername;
 
-    if (mongoose.Types.ObjectId.isValid(donation.beneficiary)) {
-      // eslint-disable-next-line global-require
-      const Beneficiary = require('../../beneficiary/model');
-      const beneficiary = await Beneficiary.findOne({
-        _id: donation.beneficiary,
-      });
-      beneficiaryUsername = beneficiary.username;
-    } else {
-      beneficiaryUsername = donation.beneficiary;
-    }
+    // if (mongoose.Types.ObjectId.isValid(donation.beneficiary)) {
+    //   // eslint-disable-next-line global-require
+    //   const Beneficiary = require('../../beneficiary/model');
+    //   const beneficiary = await Beneficiary.findOne({
+    //     _id: donation.beneficiary,
+    //   });
+    //   beneficiaryUsername = beneficiary.username;
+    // } else {
+    //   beneficiaryUsername = donation.beneficiary;
+    // }
 
     // _id - date - beneficiary_name || bneficiary de la table de donation - donor_name
     // shopkeeper_name - shopkeeper_id - shopkeeper_localisation - products
 
     return res.send({
       donation,
-      beneficiary: { id: donation.beneficiary, username: beneficiaryUsername },
     });
   } catch (e) {
     return res.status(400).send({ message: e });
@@ -71,27 +70,27 @@ module.exports.donations = () => async (req, res) => {
       return res.status(404).send({ error: 'Invalid donation' });
     }
 
-    const beneficiaryUsername = [];
-
     // eslint-disable-next-line consistent-return
-    donations.forEach(donation => {
+    const du = await donations.map(donation => {
       if (mongoose.Types.ObjectId.isValid(donation.beneficiary)) {
         // eslint-disable-next-line global-require
         const Beneficiary = require('../../beneficiary/model');
-        Beneficiary.findOne({
+        const ben = Beneficiary.findOne({
           _id: donation.beneficiary,
-        })
-          .then(ben => {
-            beneficiaryUsername.push({ id: donation.beneficiary, username: ben.username });
-          })
-          .then(() => res.send({ donations, beneficiaries: beneficiaryUsername }));
-      } else {
-        beneficiaryUsername.push({ id: donation.beneficiary, username: donation.beneficiary });
-        return res.send({
-          donations,
-          beneficiaries: beneficiaryUsername,
         });
+        donation.beneficiaryUsername = ben.username;
+        // .then(() => res.send({ donations }));
+      } else {
+        donation.beneficiaryUsername = donation.beneficiary;
       }
+      return donation;
+      // return res.send({
+      //   donations,
+      // });
+    });
+
+    return res.status(200).send({
+      donations: du,
     });
   } catch (e) {
     return res.status(400).send({ message: e });
@@ -120,7 +119,7 @@ module.exports.do_donation = User => async (req, res) => {
       return res.status(404).send({ error: 'Invalid donation' });
     }
 
-    let beneficiaryUsername;
+    // let beneficiaryUsername;
 
     if (mongoose.Types.ObjectId.isValid(donation.beneficiary)) {
       // eslint-disable-next-line global-require
@@ -128,14 +127,13 @@ module.exports.do_donation = User => async (req, res) => {
       const beneficiary = await Beneficiary.findOne({
         _id: donation.beneficiary,
       });
-      beneficiaryUsername = beneficiary.username;
+      donation.beneficiaryUsername = beneficiary.username;
     } else {
-      beneficiaryUsername = donation.beneficiary;
+      donation.beneficiaryUsername = donation.beneficiary;
     }
 
     return res.send({
       donation,
-      beneficiary: { id: donation.beneficiary, username: beneficiaryUsername },
     });
   } catch (e) {
     return res.status(400).send({ message: e });

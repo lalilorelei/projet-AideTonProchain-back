@@ -40,4 +40,12 @@ app.use('/api/shopkeeper', shopkeeperRouter);
 app.use('/api/connexion', connexionRouter);
 app.use('/api/product', productRouter);
 
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'http://www.aider-son-prochain.fr/index.html'), err => {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
+
 module.exports = app;

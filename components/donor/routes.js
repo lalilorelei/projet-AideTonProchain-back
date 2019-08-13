@@ -29,7 +29,7 @@ router.post('/donation', auth(Donor), donorCtlr.do_donation);
 router.get('/search-beneficiary', auth(Donor), beneficiaryCtlr.search);
 router.get('/search-shopkeeper', auth(Donor), shopkeeperCtlr.search);
 
-router.post('/shopkeepers-distance', shopkeeperCtlr.shopkeeperDistance);
+router.post('/shopkeepers-distance', auth(Donor), shopkeeperCtlr.shopkeeperDistance);
 router.post('/beneficiaries-distance', auth(Donor), beneficiaryCtlr.beneficiaryDistance);
 
 router.get('/shopkeepers', auth(Donor), shopkeeperCtlr.shopkeeperList);

@@ -14,6 +14,7 @@ const donnationSchema = mongoose.Schema({
   },
   donor: { type: mongoose.Schema.Types.ObjectId, ref: 'Donor', required: true },
   beneficiary: { type: String, required: true },
+  beneficiaryUsername: { type: String, required: false, default: '' },
   shopkeeper: { type: mongoose.Schema.Types.ObjectId, ref: 'Shopkeeper', required: true },
   products: [
     {

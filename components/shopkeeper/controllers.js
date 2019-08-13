@@ -59,9 +59,7 @@ module.exports.shopkeeperDistance = async (req, res) => {
       return res.status(404).send({ error: 'No shopkeeper' });
     }
 
-    const shops = [...shopkeepers];
-
-    const thirty = shops.filter(shop => {
+    const thirty = shopkeepers.filter(shop => {
       const distance = geolib.getDistance(
         { latitude, longitude },
         { latitude: shop.localisation.latitude, longitude: shop.localisation.longitude },

@@ -58,11 +58,11 @@ module.exports.beneficiaryDistance = async (req, res) => {
     }
 
     const beneficiariesLocation = beneficiaries.filter(
-      beneficiary => beneficiary.location.latitude !== 0,
+      beneficiary => beneficiary.localisation.latitude !== 0,
     );
 
     const beneficiariesNoLocation = beneficiaries.filter(
-      beneficiary => beneficiary.location.latitude === 0,
+      beneficiary => beneficiary.localisation.latitude === 0,
     );
 
     const thirty = beneficiariesLocation.filter(beneficiary => {
