@@ -1,15 +1,18 @@
-// const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
 const Donor = require('./model');
+const utilCtlr = require('../utils_components/controllers/index');
+const donationCtlr = require('../utils_components/controllers/donation');
 
-module.exports.profil = (req, res, next) => {
-  res.status(200).json({
-    message: 'Get Success!',
-  });
-};
+module.exports.register = utilCtlr.register(Donor);
+module.exports.connexion = utilCtlr.connexion();
+module.exports.profil = utilCtlr.profil();
+module.exports.profil_update = utilCtlr.profil_update(Donor);
+module.exports.logout = utilCtlr.logout(Donor);
+module.exports.logoutAll = utilCtlr.logoutAll(Donor);
 
-module.exports.register = (req, res, next) => {
-  res.status(201).json({
-    message: 'donor added successfully!',
-  });
-};
+module.exports.disable = utilCtlr.disable(Donor);
+
+module.exports.donation = donationCtlr.donation();
+module.exports.donations = donationCtlr.donations();
+module.exports.do_donation = donationCtlr.do_donation(Donor);
+
+module.exports.upload_avatar = utilCtlr.upload_avatar(Donor);

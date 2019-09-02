@@ -4,10 +4,14 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+require('./db/mongoose');
+
 const adminRouter = require('./components/admin/routes');
 const beneficiaryRouter = require('./components/beneficiary/routes');
 const donorRouter = require('./components/donor/routes');
 const shopkeeperRouter = require('./components/shopkeeper/routes');
+const connexionRouter = require('./components/connexion/routes');
+const productRouter = require('./components/product/routes');
 
 const app = express();
 
@@ -33,5 +37,15 @@ app.use('/api/admin', adminRouter);
 app.use('/api/beneficiary', beneficiaryRouter);
 app.use('/api/donor', donorRouter);
 app.use('/api/shopkeeper', shopkeeperRouter);
+app.use('/api/connexion', connexionRouter);
+app.use('/api/product', productRouter);
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'http://www.aider-son-prochain.fr/index.html'), err => {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
 
 module.exports = app;

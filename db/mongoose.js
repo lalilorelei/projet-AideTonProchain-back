@@ -2,16 +2,19 @@ const mongoose = require('mongoose');
 
 const config = require('config');
 
-const mongodb = config.get('Customer.dbConfig');
+const mongodb = config.get('dev.dbConfig');
+
 mongoose
-  .connect(mongodb, {
+  .connect(`${mongodb.host}:${mongodb.port}/${mongodb.dbName}`, {
     useNewUrlParser: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   .then(() => {
-    console.log('Successfully connected to MongoDB Atlas!');
+    console.log('Successfully connected to MongoDB');
   })
+  // eslint-disable-next-line arrow-parens
   .catch(error => {
-    console.log('Unable to connect to MongoDB Atlas!');
+    console.log('Unable to connect to MongoDB');
     console.error(error);
   });
